@@ -103,5 +103,14 @@ sudo systemctl enable filebeat.service
 sudo filebeat export template | sudo tee /etc/filebeat/filebeat.template.json
 curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/_template/filebeat' -d@/etc/filebeat/filebeat.template.json
 sudo filebeat setup --dashboards
-sudo filebeat modules enable nginx
 sudo systemctl restart filebeat
+
+# Install & configure metricbeat
+sudo apt-get install metricbeat -y
+sudo systemctl daemon-reload
+sudo systemctl enable metricbeat.service
+sudo metricbeat export template | sudo tee /etc/metricbeat/metricbeat.template.json
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/_template/metricbeat' -d@/etc/metricbeat/metricbeat.template.json
+sudo metricbeat setup --dashboards
+sudo systemctl restart metricbeat
+
