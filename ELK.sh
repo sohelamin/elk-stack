@@ -87,12 +87,30 @@ output {
     index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
     document_type => "%{[@metadata][type]}"
   }
+  # if "shouldmail" in [tags] {
+  #   email {
+  #       to => 'technical@example.com'
+  #       from => 'monitor@example.com'
+  #       subject => 'Alert - %{name}'
+  #       body => "Content:\n%{message}"
+  #       address => "mail.example.com"
+  #       via => 'smtp'
+  #       port => 465
+  #       username => "elk@example.com"
+  #       password => "<PASSWORD>"
+  #   }
+  #   slack {
+  #       url => <YOUR SLACK WEBHOOK URL HERE>
+  #   }
+  # }
 }
 EOT
 exit
 EOC
 sudo systemctl daemon-reload
 sudo /usr/share/logstash/bin/logstash-plugin install logstash-input-beats
+sudo /usr/share/logstash/bin/logstash-plugin install logstash-output-email
+sudo /usr/share/logstash/bin/logstash-plugin install logstash-output-slack
 sudo systemctl enable logstash.service
 sudo systemctl restart logstash.service
 
