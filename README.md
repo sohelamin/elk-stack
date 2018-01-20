@@ -1,6 +1,6 @@
 # ELK Stack
 
-[elk-stack-elkb-diagram](https://user-images.githubusercontent.com/1708683/35180071-ca7658bc-fdd1-11e7-87ea-3c55c037c501.png)
+![elk-stack-elkb-diagram](https://user-images.githubusercontent.com/1708683/35180071-ca7658bc-fdd1-11e7-87ea-3c55c037c501.png)
 
 ## Installation
 
