@@ -1,5 +1,5 @@
 #/bin/bash
-echo -n "Enter ELK Server's IP or FQDN: "
+echo -n "Enter ELK Server's Domain: "
 read elkip
 echo -n "Enter Kibana Admin Web Password: "
 read kibanapassword
@@ -69,9 +69,9 @@ cat <<EOT > /etc/logstash/conf.d/02-beats-input.conf
 input {
   beats {
     port => 5044
-    ssl => false
-    #ssl_certificate => "/etc/pki/tls/certs/logstash-forwarder.crt"
-    #ssl_key => "/etc/pki/tls/private/logstash-forwarder.key"
+    ssl => true
+    ssl_certificate => "/etc/pki/tls/certs/logstash-forwarder.crt"
+    ssl_key => "/etc/pki/tls/private/logstash-forwarder.key"
   }
 }
 EOT
