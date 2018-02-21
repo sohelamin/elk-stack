@@ -131,4 +131,3 @@ sudo metricbeat export template | sudo tee /etc/metricbeat/metricbeat.template.j
 curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/_template/metricbeat' -d@/etc/metricbeat/metricbeat.template.json
 sudo metricbeat setup --dashboards
 sudo systemctl restart metricbeat
-

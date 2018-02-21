@@ -1,7 +1,7 @@
 version: '3'
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.2
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.1
     environment:
       - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
     volumes:
@@ -12,19 +12,19 @@ services:
       - elknet
     restart: always
   logstash:
-    image: docker.elastic.co/logstash/logstash-oss:6.1.2
+    build:
+      context: logstash/
     environment:
       - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
     volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
       - 5044:5044
-    # command: bash -c "logstash -f /usr/share/logstash/pipeline/logstash.conf && bin/logstash-plugin install logstash-input-beats"
     networks:
       - elknet
     restart: always
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.1.2
+    image: docker.elastic.co/kibana/kibana-oss:6.2.1
     ports:
       - 5601:5601
     networks:
