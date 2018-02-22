@@ -40,7 +40,7 @@ output.logstash:
     ```
 2. Setup the beat clients (filebeat, metricbeat) as needed
 3. Import the Kibana dashboard
-    Go to `http://localhost:5601/` then, click `Management->Saved Objects->Import`  and import from the [kibana/dashoard.json](kibana/dashoard.json) file
+    Go to `http://localhost:5601/` then, click `Management->Saved Objects->Import`  and import from the [kibana/dashboard.json](kibana/dashboard.json) file
 4. Create index pattern as `filebeat-*` & `metricbeat-*`
 
 ### Security
