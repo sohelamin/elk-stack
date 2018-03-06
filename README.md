@@ -56,6 +56,7 @@ curl -XDELETE 'http://localhost:9200/filebeat-*'
 Check the space usage in Elasticsearch
 ```
 curl -XGET 'http://localhost:9200/_cat/indices?v'
+curl -XGET 'http://localhost:9200/_cat/allocation?v'
 ```
 
 ## Author
