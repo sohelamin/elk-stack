@@ -1,4 +1,3 @@
-
 # ELK Stack
 
 <p align="center">
@@ -6,52 +5,53 @@
 </p>
 
 ## Using Linux
-
-### ELK Stack
-Setup the main ELK Stack on a linux server using the shell script.
-```
-sudo chmod +x ELK.sh
-./ELK.sh
-```
-
-### Clients (Filebeat, Metricbeat)
-Once, you've done the setup of ELK Stack you should setup the beat clients eg. filebeat, metricbeat on the different server.
-```
-sudo chmod +x filebeat.sh
-./filebeat.sh
-
-sudo chmod +x metricbeat.sh
-./metricbeat.sh
-```
-
-Now set the output of filebeat, metricbeat as logstash.
-```
-#----------------------------- Logstash output --------------------------------
-output.logstash:
-  # The Logstash hosts
-  hosts: ["localhost:5044"]
-  ssl.certificate_authorities: ["/etc/pki/tls/certs/logstash-forwarder.crt"]
-```
+1. Run the script.
+  ```
+  sudo chmod +x ELK.sh
+  ./ELK.sh
+  ```
+2. Setup beat clients (eg. Filebeat) to your application server.
+  ```
+  sudo chmod +x filebeat.sh
+  ./filebeat.sh
+  ```
+3. Configure beat clients (eg. filebeat) output as logstash.
+  ```
+  #----------------------------- Logstash output --------------------------------
+  output.logstash:
+    # The Logstash hosts
+    hosts: ["localhost:5044"]
+  ```
+4. Create `filebeat-*` index pattern in kibana dashboard.
 
 ## Using Docker
-1. Up the stack using `docker-compose` command
+1. Up the stack using `docker-compose` command.
     ```
     docker-compose up -d
     ```
-2. Setup the beat clients (filebeat, metricbeat) as needed
-3. Import the Kibana dashboard
-    Go to `http://localhost:5601/` then, click `Management->Saved Objects->Import`  and import from the [kibana/dashboard.json](kibana/dashboard.json) file
-4. Create index pattern as `filebeat-*` & `metricbeat-*`
+2. Setup beat clients (eg. Filebeat) to your application server.
+  ```
+  sudo chmod +x filebeat.sh
+  ./filebeat.sh
+  ```
+3. Configure beat clients (eg. filebeat) output as logstash.
+  ```
+  #----------------------------- Logstash output --------------------------------
+  output.logstash:
+    # The Logstash hosts
+    hosts: ["localhost:5044"]
+  ```
+4. Create `filebeat-*` index pattern in kibana dashboard.
 
 ### Security
 To protect the kibana dashboard you can use the `htpasswd` in nginx.
-Disallow to access directly the port 9200, 5601, 5044 over the web and use SSL certificates for the ELK & beat communication.
+Disallow to access directly the port 9200, 5601, 5044 and use ssl authentication while communicating with logstash.
 
 ### Extra commands
 
 Delete indices from Elasticsearch
 ```
-curl -XDELETE 'http://localhost:9200/filebeat-*'
+curl -XDELETE 'http://localhost:9200/logstash-*'
 ```
 Check the space usage in Elasticsearch
 ```

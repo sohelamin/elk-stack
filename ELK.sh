@@ -1,22 +1,20 @@
 #/bin/bash
-echo -n "Enter ELK Server's Domain: "
+echo -n "Enter ELK Server's Domain/IP: "
 read elkip
 echo -n "Enter Kibana Admin Web Password: "
 read kibanapassword
 
-# Update & upgrade the system
+# Update the system
 sudo apt-get update
-sudo apt-get upgrade -y
 
 # Install java
-sudo add-apt-repository ppa:webupd8team/java -y
 sudo apt-get update
-sudo apt-get install oracle-java8-installer -y
+sudo apt-get install default-jdk -y
 
 # Add elasticsearch package source
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 sudo apt-get install apt-transport-https -y
-echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
 sudo apt-get update
 
 # Install elasticsearch
@@ -27,7 +25,6 @@ sudo systemctl restart elasticsearch.service
 
 # Install kibana
 sudo apt-get install kibana -y
-sudo sed -i "s/#server.host: .*/server.host: localhost/" /etc/kibana/kibana.yml
 sudo systemctl daemon-reload
 sudo systemctl enable kibana.service
 sudo systemctl restart kibana.service
@@ -61,17 +58,12 @@ sudo systemctl restart nginx
 
 # Install & configure logstash
 sudo apt-get install logstash -y
-sudo mkdir -p /etc/pki/tls/certs
-sudo mkdir /etc/pki/tls/private
-cd /etc/pki/tls; sudo openssl req -subj '/CN='$elkip'/' -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
+
 cat <<EOC | sudo su
 cat <<EOT > /etc/logstash/conf.d/02-beats-input.conf
 input {
   beats {
     port => 5044
-    ssl => true
-    ssl_certificate => "/etc/pki/tls/certs/logstash-forwarder.crt"
-    ssl_key => "/etc/pki/tls/private/logstash-forwarder.key"
   }
 }
 EOT
@@ -87,18 +79,7 @@ output {
     index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
     document_type => "%{[@metadata][type]}"
   }
-  # if "shouldmail" in [tags] {
-  #   email {
-  #       to => 'technical@example.com'
-  #       from => 'monitor@example.com'
-  #       subject => 'Alert - %{name}'
-  #       body => "Content:\n%{message}"
-  #       address => "mail.example.com"
-  #       via => 'smtp'
-  #       port => 465
-  #       username => "elk@example.com"
-  #       password => "<PASSWORD>"
-  #   }
+  # if "shouldalert" in [tags] {
   #   slack {
   #       url => <YOUR SLACK WEBHOOK URL HERE>
   #   }
@@ -109,25 +90,6 @@ exit
 EOC
 sudo systemctl daemon-reload
 sudo /usr/share/logstash/bin/logstash-plugin install logstash-input-beats
-sudo /usr/share/logstash/bin/logstash-plugin install logstash-output-email
-sudo /usr/share/logstash/bin/logstash-plugin install logstash-output-slack
+#sudo /usr/share/logstash/bin/logstash-plugin install logstash-output-slack
 sudo systemctl enable logstash.service
 sudo systemctl restart logstash.service
-
-# Install & configure filebeat
-sudo apt-get install filebeat -y
-sudo systemctl daemon-reload
-sudo systemctl enable filebeat.service
-sudo filebeat export template | sudo tee /etc/filebeat/filebeat.template.json
-curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/_template/filebeat' -d@/etc/filebeat/filebeat.template.json
-sudo filebeat setup --dashboards
-sudo systemctl restart filebeat
-
-# Install & configure metricbeat
-sudo apt-get install metricbeat -y
-sudo systemctl daemon-reload
-sudo systemctl enable metricbeat.service
-sudo metricbeat export template | sudo tee /etc/metricbeat/metricbeat.template.json
-curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/_template/metricbeat' -d@/etc/metricbeat/metricbeat.template.json
-sudo metricbeat setup --dashboards
-sudo systemctl restart metricbeat

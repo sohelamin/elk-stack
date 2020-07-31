@@ -1,7 +1,7 @@
 version: '3'
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.1
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.8.1
     environment:
       - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
     volumes:
@@ -24,7 +24,7 @@ services:
       - elknet
     restart: always
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.2.1
+    image: docker.elastic.co/kibana/kibana-oss:7.8.1
     ports:
       - 5601:5601
     networks:
