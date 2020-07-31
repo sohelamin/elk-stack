@@ -51,7 +51,7 @@ Disallow to access directly the port 9200, 5601, 5044 and use ssl authentication
 
 Delete indices from Elasticsearch
 ```
-curl -XDELETE 'http://localhost:9200/logstash-*'
+curl -XDELETE 'http://localhost:9200/filebeat-*'
 ```
 Check the space usage in Elasticsearch
 ```

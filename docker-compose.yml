@@ -1,9 +1,10 @@
-version: '3'
+version: '3.2'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.8.1
     environment:
-      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
     volumes:
       - ./esdata:/usr/share/elasticsearch/data
     ports:
